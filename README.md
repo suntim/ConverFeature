@@ -1,4 +1,4 @@
-# ConverFeature
+1/# ConverFeature
 def show_rich_feature(x_relu,Node):
     print(x_relu.shape[1],"X",x_relu.shape[2])
     feature_map = tf.reshape(x_relu, [x_relu.shape[1],x_relu.shape[2],Node])
@@ -67,3 +67,16 @@ for j in range(MaxStep):#数据太多，会死机，要分批次训练
     title(title_name)
     plt.show(fig2)
     show_rich_feature(Y2_relu,L)
+
+2/# ConverFeature
+# conv1
+    with tf.name_scope('conv1_1') as scope:
+        kernel = weight_variable([3, 3, Channels, 64])
+        biases = bias_variable([64])
+        conv1_1 = tf.nn.bias_add(conv2d(x, kernel), biases)
+        inputs, pop_mean, pop_var, beta, scale = my_batch_norm(conv1_1)
+        conv_batch_norm = tf.nn.batch_normalization(inputs, pop_mean, pop_var, beta, scale, 0.001)
+        output_conv1_1 = tf.nn.relu(conv_batch_norm, name=scope)
+        # 结果可视化
+        split = tf.split(output_conv1_1, num_or_size_splits=64, axis=3)
+        tf.summary.image('conv1_1_features', split[0], 64)
